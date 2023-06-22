@@ -1,9 +1,10 @@
 import io.papermc.hangarpublishplugin.model.Platforms
+import xyz.jpenilla.runpaper.task.RunServer
+import xyz.jpenilla.runtask.service.DownloadsAPIService
 
 plugins {
   id("platform-conventions")
   id("io.papermc.paperweight.userdev")
-  id("net.minecrell.plugin-yml.bukkit")
   id("xyz.jpenilla.run-paper")
   id("io.papermc.hangar-publish-plugin")
 }
@@ -11,7 +12,7 @@ plugins {
 val minecraftVersion = libs.versions.minecraft
 
 dependencies {
-  paperweight.paperDevBundle(minecraftVersion.map { "$it-R0.1-SNAPSHOT" })
+  paperweight.devBundle("dev.folia", minecraftVersion.map { "$it-R0.1-SNAPSHOT" }.get())
 
   implementation(projects.squaremapCommon)
 
@@ -45,6 +46,15 @@ tasks {
   processResources {
     filesMatching("plugin.yml") {
       filter { it.replace("1.20", "'1.20'") }
+    val props = mapOf(
+      "version" to project.version,
+      "website" to providers.gradleProperty("githubUrl").get(),
+      "description" to project.description,
+      "apiVersion" to minecraftVersion.get().take(4),
+    )
+    inputs.properties(props)
+    filesMatching("plugin.yml") {
+      expand(props)
     }
   }
 }
@@ -59,6 +69,15 @@ bukkit {
   apiVersion = "1.20"
   website = providers.gradleProperty("githubUrl").get()
   authors = listOf("jmp")
+val foliaService = DownloadsAPIService.registerIfAbsent(project) {
+  downloadsEndpoint = "https://api.papermc.io/v2/"
+  downloadProjectName = "folia"
+}
+tasks.register<RunServer>("runFolia") {
+  downloadsApiService.set(foliaService)
+  version.set(minecraftVersion)
+  pluginJars.from(squaremapPlatform.productionJar)
+  group = "run paper"
 }
 
 hangarPublish.publications.register("plugin") {
