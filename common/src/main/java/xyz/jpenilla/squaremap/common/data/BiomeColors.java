@@ -12,7 +12,7 @@ import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -40,18 +40,8 @@ public final class BiomeColors {
         Blocks.OAK_LEAVES,
         Blocks.JUNGLE_LEAVES,
         Blocks.ACACIA_LEAVES,
-        Blocks.DARK_OAK_LEAVES
-    );
-
-    private static final Set<Block> WATER_COLOR_BLOCKS = Set.of(
-        Blocks.WATER,
-        Blocks.BUBBLE_COLUMN,
-        Blocks.WATER_CAULDRON
-    );
-
-    private static final Set<Material> WATER_COLOR_MATERIALS = Set.of(
-        Material.WATER_PLANT,
-        Material.REPLACEABLE_WATER_PLANT
+        Blocks.DARK_OAK_LEAVES,
+        Blocks.MANGROVE_LEAVES
     );
 
     private final ColorBlender colorBlender = new ColorBlender();
@@ -68,14 +58,13 @@ public final class BiomeColors {
 
     public int modifyColorFromBiome(int color, final ChunkSnapshot chunk, final BlockPos pos) {
         final BlockState data = chunk.getBlockState(pos);
-        final Material mat = data.getMaterial();
         final Block block = data.getBlock();
 
         if (GRASS_COLOR_BLOCKS.contains(block)) {
             color = this.grass(pos);
         } else if (FOLIAGE_COLOR_BLOCKS.contains(block)) {
             color = this.foliage(pos);
-        } else if (WATER_COLOR_BLOCKS.contains(block) || WATER_COLOR_MATERIALS.contains(mat)) {
+        } else if (block.defaultMapColor() == MapColor.WATER) {
             int modColor = this.water(pos);
             color = Colors.mix(color, modColor, 0.8F);
         }

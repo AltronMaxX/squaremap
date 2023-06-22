@@ -44,6 +44,8 @@ tasks {
     outputJar.set(productionJarLocation(minecraftVersion))
   }
   processResources {
+    filesMatching("plugin.yml") {
+      filter { it.replace("1.20", "'1.20'") }
     val props = mapOf(
       "version" to project.version,
       "website" to providers.gradleProperty("githubUrl").get(),
@@ -61,11 +63,16 @@ squaremapPlatform {
   productionJar.set(tasks.reobfJar.flatMap { it.outputJar })
 }
 
+bukkit {
+  main = "xyz.jpenilla.squaremap.paper.SquaremapPaperBootstrap"
+  name = rootProject.name
+  apiVersion = "1.20"
+  website = providers.gradleProperty("githubUrl").get()
+  authors = listOf("jmp")
 val foliaService = DownloadsAPIService.registerIfAbsent(project) {
   downloadsEndpoint = "https://api.papermc.io/v2/"
   downloadProjectName = "folia"
 }
-
 tasks.register<RunServer>("runFolia") {
   downloadsApiService.set(foliaService)
   version.set(minecraftVersion)

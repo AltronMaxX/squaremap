@@ -75,7 +75,8 @@ public final class WorldAdvanced extends AbstractWorldConfig<Advanced> {
                 Map.entry("minecraft:dark_forest", "#1c7b07"),
                 Map.entry("minecraft:jungle", "#1f8907"),
                 Map.entry("minecraft:sparse_jungle", "#1f8907"),
-                Map.entry("minecraft:bamboo_jungle", "#1f8907")
+                Map.entry("minecraft:bamboo_jungle", "#1f8907"),
+                Map.entry("minecraft:mangrove_swamp", "#6f9623")
             )
         ).forEach((key, color) -> {
             final Biome biome = Util.requireEntry(registry, new ResourceLocation(key));
@@ -126,6 +127,7 @@ public final class WorldAdvanced extends AbstractWorldConfig<Advanced> {
             Map.ofEntries(
                 Map.entry("minecraft:mycelium", "#6F6265"),
                 Map.entry("minecraft:terracotta", "#9E6246"),
+                Map.entry("minecraft:pink_petals", "#FFB4DB"),
                 Map.entry("minecraft:dandelion", "#FFEC4F"),
                 Map.entry("minecraft:poppy", "#ED302C"),
                 Map.entry("minecraft:blue_orchid", "#2ABFFD"),
